@@ -1,0 +1,225 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  annotations:
+    cni.projectcalico.org/podIP: 10.130.246.37/32
+    cni.projectcalico.org/podIPs: 10.130.246.37/32
+    k8s.v1.cni.cncf.io/network-status: |-
+      [{
+          "name": "",
+          "ips": [
+              "10.130.246.37"
+          ],
+          "default": true,
+          "dns": {}
+      }]
+    k8s.v1.cni.cncf.io/networks-status: |-
+      [{
+          "name": "",
+          "ips": [
+              "10.130.246.37"
+          ],
+          "default": true,
+          "dns": {}
+      }]
+    openshift.io/scc: restricted
+  selfLink: /api/v1/namespaces/testerum-project/pods/example
+  resourceVersion: '1341886272'
+  name: example
+  uid: 90b28fbc-7a4a-4322-800c-be2131aedafb
+  creationTimestamp: '2021-06-23T09:23:59Z'
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: v1
+      time: '2021-06-23T09:23:59Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:labels':
+            .: {}
+            'f:app': {}
+        'f:spec':
+          'f:containers':
+            'k:{"name":"hello-openshift"}':
+              'f:image': {}
+              'f:terminationMessagePolicy': {}
+              .: {}
+              'f:resources': {}
+              'f:args': {}
+              'f:command': {}
+              'f:terminationMessagePath': {}
+              'f:imagePullPolicy': {}
+              'f:ports':
+                .: {}
+                'k:{"containerPort":8080,"protocol":"TCP"}':
+                  .: {}
+                  'f:containerPort': {}
+                  'f:protocol': {}
+              'f:name': {}
+          'f:dnsPolicy': {}
+          'f:enableServiceLinks': {}
+          'f:restartPolicy': {}
+          'f:schedulerName': {}
+          'f:securityContext':
+            .: {}
+            'f:fsGroup': {}
+            'f:seLinuxOptions':
+              'f:level': {}
+          'f:terminationGracePeriodSeconds': {}
+    - manager: calico
+      operation: Update
+      apiVersion: v1
+      time: '2021-06-23T09:24:00Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            'f:cni.projectcalico.org/podIP': {}
+            'f:cni.projectcalico.org/podIPs': {}
+    - manager: multus
+      operation: Update
+      apiVersion: v1
+      time: '2021-06-23T09:24:00Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            'f:k8s.v1.cni.cncf.io/network-status': {}
+            'f:k8s.v1.cni.cncf.io/networks-status': {}
+    - manager: kubelet
+      operation: Update
+      apiVersion: v1
+      time: '2021-06-23T09:24:09Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:conditions':
+            'k:{"type":"ContainersReady"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Initialized"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Ready"}':
+              .: {}
+              'f:lastProbeTime': {}
+              'f:lastTransitionTime': {}
+              'f:status': {}
+              'f:type': {}
+          'f:containerStatuses': {}
+          'f:hostIP': {}
+          'f:phase': {}
+          'f:podIP': {}
+          'f:podIPs':
+            .: {}
+            'k:{"ip":"10.130.246.37"}':
+              .: {}
+              'f:ip': {}
+          'f:startTime': {}
+  namespace: testerum-project
+  labels:
+    app: hello-openshift
+spec:
+  nodeSelector:
+    node-role.dian.so/worker: ''
+  restartPolicy: Always
+  serviceAccountName: default
+  imagePullSecrets:
+    - name: default-dockercfg-6w6ln
+  priority: 0
+  schedulerName: default-scheduler
+  enableServiceLinks: true
+  terminationGracePeriodSeconds: 30
+  preemptionPolicy: PreemptLowerPriority
+  nodeName: cn-beijing.i-2zefoh9ulbhlddm0vz3d
+  securityContext:
+    seLinuxOptions:
+      level: 's0:c46,c0'
+    fsGroup: 1002070000
+  containers:
+    - resources: {}
+      terminationMessagePath: /dev/termination-log
+      name: hello-openshift
+      command:
+        - ping
+      securityContext:
+        capabilities:
+          drop:
+            - KILL
+            - MKNOD
+            - SETGID
+            - SETUID
+        runAsUser: 1002070000
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: default-token-9pspb
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      terminationMessagePolicy: File
+      image: quay.xiaodiankeji.net/nianyin/vsftpd
+      args:
+        - 127.0.0.1
+  serviceAccount: default
+  volumes:
+    - name: default-token-9pspb
+      secret:
+        secretName: default-token-9pspb
+        defaultMode: 420
+  dnsPolicy: ClusterFirst
+  tolerations:
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+status:
+  phase: Running
+  conditions:
+    - type: Initialized
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2021-06-23T09:23:59Z'
+    - type: Ready
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2021-06-23T09:24:09Z'
+    - type: ContainersReady
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2021-06-23T09:24:09Z'
+    - type: PodScheduled
+      status: 'True'
+      lastProbeTime: null
+      lastTransitionTime: '2021-06-23T09:23:59Z'
+  hostIP: 10.108.1.57
+  podIP: 10.130.246.37
+  podIPs:
+    - ip: 10.130.246.37
+  startTime: '2021-06-23T09:23:59Z'
+  containerStatuses:
+    - restartCount: 0
+      started: true
+      ready: true
+      name: hello-openshift
+      state:
+        running:
+          startedAt: '2021-06-23T09:24:08Z'
+      imageID: >-
+        quay.xiaodiankeji.net/nianyin/vsftpd@sha256:5d73b13f14a0bb73c608401aae9e154d78420f67b0bfdd19f1c17ab505965119
+      image: 'quay.xiaodiankeji.net/nianyin/vsftpd:latest'
+      lastState: {}
+      containerID: 'cri-o://3417678ab08d587dedbc3ee54b307c4e97b18d35b99f3bd59cb3f59f22c66324'
+  qosClass: BestEffort

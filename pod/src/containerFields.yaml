@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lifecycle-demo
+spec:
+  containers:
+    - name: lifecycle-demo-container
+      image: nginx
+      lifecycle:
+        # 在容器启动后，执行指定的操作。postStart定义，虽然是在Docker容器ENTRYPOINT执行之后，但它并不严格保证顺序。
+        # 也就是说，在 postStart 启动时，ENTRYPOINT 有可能还没有结束
+        postStart:
+          exec:
+            command: ["/bin/sh", "-c", "echo hi from the postStart hook > /usr/share/message"]
+
+        # preStop 操作的执行，是同步的。所以，它会阻塞当前的容器杀死流程，直到这个 Hook 定义操作完成之后
+        preStop:
+          exec:
+            command: ["/usr/sbin/nginx", "-s", "quit"]
+      imagePullPolicy: IfNotPresent
+  restartPolicy: Always

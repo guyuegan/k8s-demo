@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  # 没有对应label会怎样？
+  nodeSelector:
+    disktype: ssd
+
+  # 共享主机namespace
+  # hostNetwork: true
+  # hostIPC: true
+  # hostPID: true
+
+  # Pod 里的容器要共享 PID Namespace
+  shareProcessNamespace: true
+
+  # hostAliases即使pod重启依然有效； 如果直接修改了hosts文件的话，则pod重启会消失
+  hostAliases:
+    - ip: "220.181.38.148"
+      hostnames:
+        - "baidu.com"
+        - "ping.server"
+
+  containers:
+    - name: nginx
+      image: nginx
+      imagePullPolicy: IfNotPresent
+    - name: shell
+      image: alpine
+      stdin: true
+      tty: true
+      imagePullPolicy: IfNotPresent
+  restartPolicy: Always

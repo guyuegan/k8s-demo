@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-claim
+spec:
+  #  accessModes: ReadWriteOnce，表示这个 Volume 的挂载方式是可读写，并且只能被挂载在一个节点上而非被多个节点共享
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      # 想要的 Volume 大小至少是 1 GiB；
+      storage: 1Gi

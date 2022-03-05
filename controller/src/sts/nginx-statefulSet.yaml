@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-sts
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  # 比deployment, 多了一个 serviceName字段
+  serviceName: nginx-headless
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: web
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: nginx

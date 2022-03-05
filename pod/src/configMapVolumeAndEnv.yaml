@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-map-test
+spec:
+  containers:
+    - name: config-map-use
+      image: alpine
+      command: ["sleep", "3600"]
+
+      # 定义环境变量
+      env:
+        - name: PLAYER_INITIAL_LIVES
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo # 引用那个configMap
+              key: player_initial_lives # 使用configMap中的哪个key
+        - name: UI_PROPERTIES_FILE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo
+              key: ui_properties_file_name
+
+      volumeMounts:
+        - mountPath: "/config"
+          name: config
+          readOnly: true
+      imagePullPolicy: IfNotPresent
+
+  restartPolicy: Always
+  volumes:
+    - name: config
+      configMap:
+        # 提供你想要挂载的 ConfigMap 的名字
+        name: game-demo
+        # 来自 ConfigMap 的一组键，将被创建为文件
+        items:
+          - key: game.properties
+            path: game.properties
+          - key: user-interface.properties
+            path: user-interface.properties

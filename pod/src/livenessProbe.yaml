@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-test
+  labels:
+    test: liveness
+spec:
+  containers:
+    - name: liveness-test-container
+      image: alpine
+      # 启动之后在/tmp目录下创建了一个healthy文件, 而30s过后，把这个文件删除掉
+      command: ["sh", "-c"]
+      args:
+        - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 360
+      imagePullPolicy: IfNotPresent
+
+      # livenessProbe（健康检查）类型是exec: 它会在容器启动后，在容器里面执行“cat /tmp/healthy”。
+      # 如果这个文件存在，这条命令的返回值就是0，Pod就会认为这个容器是健康的
+      livenessProbe:
+        exec:
+          command:
+            - cat /tmp/healthy
+        # 容器启动 5 s 后开始执行
+        initialDelaySeconds: 5
+        # 每 5 s 执行一次
+        periodSeconds: 5
+  restartPolicy: Always

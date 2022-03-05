@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: downward-api-test
+  labels:
+    app: biz-svc
+    zone: us-est-coast
+    cluster: test-cluster1
+    rack: rack-22
+spec:
+  containers:
+    - name: downward-api-test
+      image: alpine
+      command: ["sh", "-c"]
+      args:
+        # 循环cat /etc/podinfo/labels, 通过kubectl logs可以查看到输出
+        - while true; do
+          if [[ -e /etc/podinfo/labels ]]; then
+            echo -en '\n\n'; cat /etc/podinfo/labels; fi;
+          sleep 5;
+          done;
+
+      volumeMounts:
+        - mountPath: /etc/podinfo/
+          name: podinfo
+          readOnly: false
+      imagePullPolicy: IfNotPresent
+  restartPolicy: Always
+
+  # 使用downwardAPI将pod的metadata.labels挂载到容器的/etc/podinfo/labels
+  volumes:
+    - name: podinfo
+      projected:
+        sources:
+          - downwardAPI:
+              items:
+                - path: "labels"
+                  fieldRef:
+                    fieldPath: metadata.labels

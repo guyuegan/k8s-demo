@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: javaweb-2
+
+spec:
+  initContainers:
+    - name: war
+      image: demo-war:latest
+      imagePullPolicy: IfNotPresent
+      command: ["cp", "/demo.war", "/tmp"]
+      volumeMounts:
+        - mountPath: /tmp
+          name: app-volume
+
+  containers:
+    - name: tomcat
+      image: tomcat:latest
+      imagePullPolicy: IfNotPresent
+      # tomcat启动命令不是start, 而是run;
+      command: ["sh", "-c", "/usr/local/tomcat/bin/catalina.sh run"]
+      volumeMounts:
+        - mountPath: /usr/local/tomcat/webapps
+          name: app-volume
+      ports:
+        - containerPort: 8080
+          hostPort: 8001
+
+  restartPolicy: Always
+  volumes:
+    - name: app-volume
+      # Pod从节点上删除时，emptyDir卷中的数据也会被删除
+      emptyDir: {}
+
+  # 通过使用hostPath验证了init容器是能正常copy war包的
+#  volumes:
+#    - name: app-volume
+#      hostPath:
+#        # 宿主机没有/data, k8s会自动创建
+#        path: /tmp

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: two-containers
+
+spec:
+  containers:
+    - name: nginx-containers
+      image: nginx
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: shared-data
+    - name: debian-containers
+      image: debian
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /pod-data
+          name: shared-data
+      command: ["/bin/sh"]
+      args: ["-c", "echo hello from debian container > /pod-data/index.html"]
+
+  restartPolicy: Never
+  volumes:
+    - name: shared-data
+      hostPath:
+        # 宿主机没有/data, k8s会自动创建
+        path: /data
+
+ 

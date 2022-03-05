@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: javaweb-2
+
+spec:
+  initContainers:
+    - name: war
+      image: demo-war:latest
+      imagePullPolicy: IfNotPresent
+      command: ["cp", "/demo.war", "/app"]
+      volumeMounts:
+        - mountPath: /app
+          name: app-volume
+
+  containers:
+    - name: tomcat
+      image: tomcat:latest
+      imagePullPolicy: IfNotPresent
+      # tomcat启动命令不是start, 而是run; 参见warAndTomcat2.yaml
+      command: ["sh", "-c", "/usr/local/tomcat/bin/catalina.sh start"]
+      volumeMounts:
+        - mountPath: /usr/local/tomcat/webapps
+          name: app-volume
+      ports:
+        - containerPort: 8080
+          hostPort: 8001
+
+  restartPolicy: Always
+  volumes:
+    - name: app-volume
+      # Pod从节点上删除时，emptyDir卷中的数据也会被删除
+      emptyDir: {}

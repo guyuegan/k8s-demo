@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: two-containers
+
+spec:
+  containers:
+    - name: nginx-containers
+      image: nginx
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: shared-data
+    - name: debian-containers
+      image: debian
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /pod-data
+          name: shared-data
+      command: ["/bin/sh", "-c"]
+      # 保活方式一
+      # args: ["echo 'nginx, im debian, how are you' > /pod-data/index.html && while true; do echo keep alive; sleep 10; done"]
+      # 保活方式二
+      args:
+        - |
+          echo hi, its debian, how are you > /pod-data/index.html
+          while true;
+          do
+            echo keep alive; sleep 10;
+          done
+
+  restartPolicy: Never
+  volumes:
+    - name: shared-data
+      hostPath:
+        # 宿主机没有/data, k8s会自动创建
+        path: /data
+
+ 
